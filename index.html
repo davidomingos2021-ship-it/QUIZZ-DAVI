@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz do Davi 💙</title>
 
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+ min-height:100vh;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(135deg,#38b6ff,#0048ff);padding:20px;
+}
+.caixa{
+ background:white;width:100%;max-width:430px;padding:28px;border-radius:25px;
+ text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25);animation:entrar .4s ease;
+}
+@keyframes entrar{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+h1{color:#1261ff;margin-bottom:15px;font-size:28px}
+p{font-size:17px;color:#333;line-height:26px;margin-bottom:20px}
+button{
+ width:100%;margin:7px 0;background:#1261ff;color:white;border:none;
+ padding:14px;border-radius:14px;font-size:16px;cursor:pointer;transition:.2s;
+}
+button:hover{transform:scale(1.03);background:#0048d9}
+.barra{height:10px;background:#ddd;border-radius:10px;margin-bottom:20px;overflow:hidden}
+.progresso{height:100%;background:#1261ff;width:0%;transition:.3s}
+.pequeno{font-size:14px;color:#666;margin-top:12px}
+</style>
+</head>
+
+<body>
+
+<div class="caixa">
+ <div class="barra"><div class="progresso" id="progresso"></div></div>
+ <h1 id="titulo">💙 Será que você me conhece? 💙</h1>
+ <p id="pergunta">Preparei esse quiz porque queria que a gente se conhecesse um pouquinho melhor. 😊</p>
+ <div id="opcoes">
+  <button onclick="iniciar()">Começar 🚀</button>
+ </div>
+ <div class="pequeno" id="contador"></div>
+</div>
+
+<script>
+let atual = 0;
+let pontos = 0;
+
+const perguntas = [
+ {
+  titulo:"Pergunta 1 ❤️",
+  pergunta:"Se eu pudesse escolher uma coisa pra fazer agora, o que eu escolheria?",
+  opcoes:["😴 Dormir","🎮 Jogar videogame","💬 Passar o tempo conversando com você","🌍 Viajar sozinho"],
+  certa:2
+ },
+ {
+  titulo:"Pergunta 2 🎂",
+  pergunta:"Qual é a minha data de aniversário?",
+  opcoes:["🎈 31 de dezembro","🎈 25 de dezembro","🎈 1º de janeiro","🎈 31 de outubro"],
+  certa:0
+ },
+ {
+  titulo:"Pergunta 3 🚗",
+  pergunta:"Qual eu gosto mais?",
+  opcoes:["🏍️ Motos","🚗 Carros","❤️ Gosto dos dois igualmente","🤷 Não gosto de nenhum"],
+  certa:1
+ },
+ {
+  titulo:"Pergunta 4 💭",
+  pergunta:"Qual dessas coisas é mais importante para mim?",
+  opcoes:["💰 Ter muito dinheiro","❤️ Construir uma família feliz","🌍 Viajar o mundo inteiro","📱 Ficar famoso"],
+  certa:1
+ },
+ {
+  titulo:"Pergunta 5 😊",
+  pergunta:"O que eu mais gostei em você quando começamos a conversar?",
+  opcoes:["😂 Seu jeito engraçado","😊 Seu sorriso","❤️ Seu jeito de ser","👀 Seus olhos"],
+  certa:2
+ },
+ {
+  titulo:"Pergunta 6 🌙",
+  pergunta:"Qual é o meu tipo de rolê favorito?",
+  opcoes:["🎉 Ir para uma festa","🛍️ Passar o dia no shopping","🚐 Dar uma volta de carro ouvindo música","🏠 Ficar o dia inteiro sem fazer nada"],
+  certa:2
+ },
+ {
+  titulo:"Pergunta 7 💬",
+  pergunta:"O que eu mais gosto em uma conversa?",
+  opcoes:["Falar só de mim","😂 Dar risada","❤️ Conhecer melhor a outra pessoa","Ficar discutindo"],
+  certa:2
+ },
+ {
+  titulo:"Pergunta 8 👶",
+  pergunta:"Quantos filhos eu sonho em ter?",
+  opcoes:["👶 1","👦👧 2","👧👧 3","👶👶👶👶 4"],
+  certa:1
+ },
+ {
+  titulo:"Pergunta 9 ❤️",
+  pergunta:"O que eu mais valorizo em um relacionamento?",
+  opcoes:["💸 Dinheiro","❤️ Confiança e respeito","🌎 Viajar bastante","🎁 Ganhar presentes"],
+  certa:1
+ },
+ {
+  titulo:"Pergunta 10 🍔",
+  pergunta:"Se fosse pra gente sair pra comer hoje, o que você escolheria?",
+  opcoes:["🍕 Pizza","🍔 Hambúrguer","🍣 Sushi","🌮 Taco"],
+  certa:null
+ },
+ {
+  titulo:"Pergunta 11 🌍",
+  pergunta:"Qual lugar você gostaria de conhecer um dia?",
+  opcoes:["🏖️ Praia","🏔️ Montanhas","🏙️ Uma cidade grande","✈️ Outro país"],
+  certa:null
+ },
+ {
+  titulo:"Pergunta 12 🎵",
+  pergunta:"Qual tipo de música você mais gosta?",
+  opcoes:["🎤 Funk","🎸 Rock","🎧 Rap","🎶 Outro"],
+  certa:null
+ },
+ {
+  titulo:"Pergunta 13 ❤️",
+  pergunta:"Qual qualidade você mais valoriza em uma pessoa?",
+  opcoes:["😂 Bom humor","❤️ Respeito","🤝 Lealdade","✝️ Fé"],
+  certa:null
+ },
+ {
+  titulo:"Pergunta 14 😊",
+  pergunta:"Qual foi sua primeira impressão de mim?",
+  opcoes:["😂 Muito engraçado","😎 Gente boa","🤔 Tímido","💙 Outro"],
+  certa:null
+ },
+ {
+  titulo:"Pergunta 15 💙",
+  pergunta:"Depois desse quiz...",
+  opcoes:["😄 Acho que já te conheço bem","😊 Tô começando a te conhecer","❤️ Quero te conhecer ainda mais","😂 Ainda tenho muito o que descobrir"],
+  certa:null
+ }
+];
+
+function iniciar(){
+ atual = 0;
+ pontos = 0;
+ mostrarPergunta();
+}
+
+function mostrarPergunta(){
+ let q = perguntas[atual];
+ document.getElementById("titulo").innerHTML = q.titulo;
+ document.getElementById("pergunta").innerHTML = q.pergunta;
+ document.getElementById("contador").innerHTML = (atual+1) + " de " + perguntas.length;
+ document.getElementById("progresso").style.width = ((atual)/perguntas.length*100) + "%";
+
+ let html = "";
+ q.opcoes.forEach((op,i)=>{
+  html += `<button onclick="responder(${i})">${op}</button>`;
+ });
+ document.getElementById("opcoes").innerHTML = html;
+}
+
+function responder(i){
+ let q = perguntas[atual];
+ if(q.certa !== null && i === q.certa){ pontos++; }
+
+ atual++;
+
+ if(atual < perguntas.length){
+  mostrarPergunta();
+ }else{
+  resultado();
+ }
+}
+
+function resultado(){
+ document.getElementById("progresso").style.width = "100%";
+ document.getElementById("titulo").innerHTML = "🎉 Resultado 🎉";
+
+ let mensagem = "";
+ if(pontos >= 7){
+  mensagem = "Você me conhece bem demais 😳💙";
+ }else if(pontos >= 4){
+  mensagem = "Você tá me conhecendo bem, mas ainda tem coisa pra descobrir 😊";
+ }else{
+  mensagem = "Acho que a gente precisa conversar mais kkkkk 😂💙";
+ }
+
+ document.getElementById("pergunta").innerHTML =
+ `Você acertou <b>${pontos}</b> de <b>9</b> perguntas sobre mim.<br><br>
+ ${mensagem}<br><br>
+ Obrigado por fazer esse quiz. A ideia era só criar um momento divertido e fazer a gente se conhecer melhor. ❤️`;
+
+ document.getElementById("opcoes").innerHTML =
+ `<button onclick="iniciar()">Fazer de novo 🔁</button>`;
+
+ document.getElementById("contador").innerHTML = "Fim 💙";
+}
+</script>
+
+</body>
+</html>
